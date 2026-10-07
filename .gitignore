@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+task1/task1_*_harris.jpg
+task1/task1_*_orb.jpg
+task2/task2_*.jpg
+task4/task4_*.jpg
+task5/task5_*.jpg
+task6/task6_*.jpg
+task7/task7_*.jpg
