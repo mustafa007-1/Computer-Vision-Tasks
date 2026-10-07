@@ -6,6 +6,7 @@ IMAGE_DIR = Path(__file__).resolve().parent / "images"
 
 def create_synthetic_images():
     IMAGE_DIR.mkdir(exist_ok=True)
+    rng = np.random.default_rng(42)
 
     # Image 1: Shapes
     img1 = np.ones((500, 500, 3), dtype=np.uint8) * 255
@@ -22,7 +23,7 @@ def create_synthetic_images():
     cv2.imwrite(str(IMAGE_DIR / "image2.jpg"), img2)
 
     # Image 3: Random noise and some text
-    img3 = np.random.randint(0, 256, (500, 500, 3), dtype=np.uint8)
+    img3 = rng.integers(0, 256, (500, 500, 3), dtype=np.uint8)
     cv2.putText(img3, "Test Image 3", (50, 250), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 3)
     cv2.imwrite(str(IMAGE_DIR / "image3.png"), img3)
     
@@ -60,7 +61,7 @@ def create_synthetic_images():
     cv2.circle(pano_scene, (600, 300), 100, (0, 255, 0), -1) # Green circle
     cv2.fillPoly(pano_scene, [np.array([[900, 400], [1000, 200], [1100, 400]])], (0, 0, 255)) # Red triangle
     # Add noise to make features trackable
-    noise = np.random.randint(0, 50, (500, 1200, 3), dtype=np.uint8)
+    noise = rng.integers(0, 50, (500, 1200, 3), dtype=np.uint8)
     pano_scene = cv2.add(pano_scene, noise)
     
     # Extract left, center, right with overlap
