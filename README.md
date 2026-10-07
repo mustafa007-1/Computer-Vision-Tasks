@@ -23,6 +23,12 @@ This workspace contains the implementation for the "Computer Vision Lab Journal 
    ```
    Each task reads inputs from the project `images/` directory and saves generated visualizations alongside its script.
 
+4. Run the integration tests:
+   ```bash
+   python -m unittest discover -s tests -v
+   ```
+   The tests verify that every task runs from outside the project directory and that synthetic fixtures are repeatable. GitHub Actions runs the same test suite on pushes and pull requests.
+
 ## Task Implementations
 
 Each task is implemented in its own file:

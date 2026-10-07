@@ -43,7 +43,7 @@ def create_synthetic_images():
     cv2.imwrite(str(IMAGE_DIR / "box_in_scene.png"), scene)
     
     # Building (high texture)
-    building = np.random.randint(50, 200, (500, 500, 3), dtype=np.uint8)
+    building = rng.integers(50, 200, (500, 500, 3), dtype=np.uint8)
     for i in range(10):
         cv2.line(building, (0, i*50), (500, i*50), (0,0,0), 2)
         cv2.line(building, (i*50, 0), (i*50, 500), (0,0,0), 2)
