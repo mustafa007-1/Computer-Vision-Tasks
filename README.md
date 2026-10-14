@@ -1,6 +1,6 @@
-# CV Lab 6 - Feature Detection & Description
+# Computer Vision Labs
 
-This workspace contains the implementation for the "Computer Vision Lab Journal — Lab 6" tasks.
+This repository contains the Computer Vision Lab 6 and Lab 7 task implementations.
 
 ## Setup Instructions
 
@@ -20,8 +20,10 @@ This workspace contains the implementation for the "Computer Vision Lab Journal 
    python task1/task1.py
    python task2/task2.py
    # ... similarly for task3 through task7
+   python "lab 7/task 1/task.py"
+   python "lab 7/lab manual/task 1/task.py"
    ```
-   Each task reads inputs from the project `images/` directory and saves generated visualizations alongside its script.
+   Each task reads inputs from the project `images/` directory and saves generated visualizations alongside its script. See [Lab 7 README](lab%207/README.md) for the full task list.
 
 4. Run the integration tests:
    ```bash

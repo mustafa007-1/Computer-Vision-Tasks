@@ -10,3 +10,6 @@ task4/task4_*.jpg
 task5/task5_*.jpg
 task6/task6_*.jpg
 task7/task7_*.jpg
+lab 7/task */task7_*.jpg
+lab 7/lab manual/task */task7_*.jpg
+lab 7/lab manual/task */task7_*.npy
