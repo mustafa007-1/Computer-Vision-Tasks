@@ -8,7 +8,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 
-IMAGE_DIR = Path(__file__).resolve().parents[2] / "images"
+IMAGE_DIR = Path(__file__).resolve().parents[1] / "images"
 OUTPUT_DIR = Path(__file__).resolve().parent
 
 
@@ -69,7 +69,7 @@ def main():
         axis.set_title(title)
         axis.axis("off")
     figure.tight_layout()
-    output_path = OUTPUT_DIR / "task7_matcher_comparison.jpg"
+    output_path = OUTPUT_DIR / "task11_matcher_comparison.jpg"
     figure.savefig(output_path, dpi=150, bbox_inches="tight")
     plt.close(figure)
 

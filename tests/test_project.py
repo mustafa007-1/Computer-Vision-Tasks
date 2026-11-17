@@ -6,6 +6,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import numpy as np
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 PYTHON = sys.executable
@@ -13,35 +15,72 @@ PYTHON = sys.executable
 
 class ProjectIntegrationTests(unittest.TestCase):
     def test_all_tasks_run_from_outside_project_directory(self):
+        # task -> (extra command-line arguments, expected output files)
         expected_outputs = {
-            "task1": [
+            "task1": ([], [
                 f"task1_{image}_{kind}.jpg"
                 for image in ("image1", "image2", "image3")
                 for kind in ("harris", "orb")
-            ],
-            "task2": [
+            ]),
+            "task2": ([], [
                 "task2_original.jpg",
                 "task2_transformed.jpg",
                 "task2_orig_kp.jpg",
                 "task2_trans_kp.jpg",
-            ],
-            "task3": [],
-            "task4": ["task4_orb_50.jpg", "task4_orb_500.jpg"],
-            "task5": ["task5_low_texture_kp.jpg", "task5_high_texture_kp.jpg"],
-            "task6": ["task6_ransac_matches.jpg"],
-            "task7": ["task7_panorama.jpg"],
+            ]),
+            "task3": ([], []),
+            "task4": ([], ["task4_orb_50.jpg", "task4_orb_500.jpg"]),
+            "task5": ([], ["task5_low_texture_kp.jpg", "task5_high_texture_kp.jpg"]),
+            "task6": ([], ["task6_ransac_matches.jpg"]),
+            "task7": ([], ["task7_panorama.jpg"]),
+            # Lab 7 journal
+            "task8": ([], ["task8_feature_matches.jpg"]),
+            "task9": ([], ["task9_homography_comparison.jpg"]),
+            "task10": ([], ["task10_object_localization.jpg"]),
+            "task11": ([], ["task11_matcher_comparison.jpg"]),
+            "task12": ([], ["task12_image_alignment.jpg"]),
+            # Lab 7 manual
+            "task13": ([], ["task13_initial_matches.jpg"]),
+            "task14": ([], ["task14_good_matches.jpg"]),
+            "task15": ([], ["task15_homography.npy"]),
+            "task16": ([], ["task16_ransac_inliers_outliers.jpg"]),
+            "task17": ([], ["task17_aligned.jpg"]),
+            # Lab 8 (offline datasets so the tests need no downloads)
+            "task18": (["--synthetic"], [
+                "task18_samples.png",
+                "task18_features.png",
+                "task18_accuracy.png",
+                "task18_confusion_matrix.png",
+                "task18_predictions.png",
+            ]),
+            "task19": ([], [
+                "task19_corners.png",
+                "task19_subpixel_zoom.png",
+                "task19_reprojection_error.png",
+                "task19_distortion_field.png",
+                "task19_undistortion.png",
+                "task19_homography.png",
+                "task19_calibration.npz",
+            ]),
+            "task20": (["--synthetic"], [
+                "task20_tracking.mp4",
+                "task20_pipeline.png",
+                "task20_frames.png",
+            ]),
         }
 
         with tempfile.TemporaryDirectory() as working_directory:
-            for task, outputs in expected_outputs.items():
+            for task, (arguments, outputs) in expected_outputs.items():
                 with self.subTest(task=task):
                     script = PROJECT_ROOT / task / f"{task}.py"
+                    for filename in outputs:
+                        (PROJECT_ROOT / task / filename).unlink(missing_ok=True)
                     result = subprocess.run(
-                        [PYTHON, str(script)],
+                        [PYTHON, str(script), *arguments],
                         cwd=working_directory,
                         capture_output=True,
                         text=True,
-                        timeout=120,
+                        timeout=300,
                     )
                     self.assertEqual(
                         result.returncode,
@@ -54,55 +93,19 @@ class ProjectIntegrationTests(unittest.TestCase):
                             msg=f"{task} did not create {filename}",
                         )
 
-    def test_lab7_tasks_run_from_outside_project_directory(self):
-        tasks = [
-            (
-                PROJECT_ROOT / "lab 7" / f"task {number}" / "task.py",
-                PROJECT_ROOT / "lab 7" / f"task {number}",
-                output,
-            )
-            for number, output in (
-                (1, "task7_feature_matches.jpg"),
-                (2, "task7_homography_comparison.jpg"),
-                (3, "task7_object_localization.jpg"),
-                (4, "task7_matcher_comparison.jpg"),
-                (5, "task7_image_alignment.jpg"),
-            )
-        ]
-        tasks.extend(
-            (
-                PROJECT_ROOT / "lab 7" / "lab manual" / f"task {number}" / "task.py",
-                PROJECT_ROOT / "lab 7" / "lab manual" / f"task {number}",
-                output,
-            )
-            for number, output in (
-                (1, "task7_manual_initial_matches.jpg"),
-                (2, "task7_manual_good_matches.jpg"),
-                (3, "task7_manual_homography.npy"),
-                (4, "task7_manual_ransac_inliers_outliers.jpg"),
-                (5, "task7_manual_aligned.jpg"),
-            )
+    def test_calibration_matches_reference_values(self):
+        result = subprocess.run(
+            [PYTHON, str(PROJECT_ROOT / "task19" / "task19.py")],
+            capture_output=True,
+            text=True,
+            timeout=300,
         )
-
-        with tempfile.TemporaryDirectory() as working_directory:
-            for script, output_directory, output in tasks:
-                with self.subTest(script=str(script.relative_to(PROJECT_ROOT))):
-                    result = subprocess.run(
-                        [PYTHON, str(script)],
-                        cwd=working_directory,
-                        capture_output=True,
-                        text=True,
-                        timeout=120,
-                    )
-                    self.assertEqual(
-                        result.returncode,
-                        0,
-                        msg=f"{result.stdout}\n{result.stderr}",
-                    )
-                    self.assertTrue(
-                        (output_directory / output).is_file(),
-                        msg=f"{script} did not create {output}",
-                    )
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        self.assertIn("Valid views: 13 / 13", result.stdout)
+        calibration = np.load(PROJECT_ROOT / "task19" / "task19_calibration.npz")
+        self.assertAlmostEqual(calibration["K"][0, 0], 542.35, delta=1.0)
+        self.assertLess(float(calibration["mean_error"]), 1.0)
+        self.assertLess(calibration["D"].ravel()[0], 0)  # barrel distortion
 
     def test_synthetic_image_generation_is_deterministic(self):
         source_script = PROJECT_ROOT / "create_synthetic_images.py"

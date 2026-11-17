@@ -7,7 +7,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 
-IMAGE_DIR = Path(__file__).resolve().parents[3] / "images"
+IMAGE_DIR = Path(__file__).resolve().parents[1] / "images"
 OUTPUT_DIR = Path(__file__).resolve().parent
 
 
@@ -64,7 +64,7 @@ def main():
         axis.set_title(title)
         axis.axis("off")
     figure.tight_layout()
-    output_path = OUTPUT_DIR / "task7_manual_initial_matches.jpg"
+    output_path = OUTPUT_DIR / "task13_initial_matches.jpg"
     figure.savefig(output_path, dpi=120, bbox_inches="tight")
     plt.close(figure)
     print(f"Source keypoints: {len(source_keypoints)}")

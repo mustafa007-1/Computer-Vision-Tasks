@@ -7,7 +7,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 
-IMAGE_DIR = Path(__file__).resolve().parents[3] / "images"
+IMAGE_DIR = Path(__file__).resolve().parents[1] / "images"
 OUTPUT_DIR = Path(__file__).resolve().parent
 
 
@@ -55,7 +55,7 @@ def main():
     axis.set_title(f"Lowe's ratio-test matches ({len(good_matches)})")
     axis.axis("off")
     figure.tight_layout()
-    output_path = OUTPUT_DIR / "task7_manual_good_matches.jpg"
+    output_path = OUTPUT_DIR / "task14_good_matches.jpg"
     figure.savefig(output_path, dpi=150, bbox_inches="tight")
     plt.close(figure)
     print(f"Good matches after Lowe's ratio test: {len(good_matches)}")

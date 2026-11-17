@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 
-IMAGE_DIR = Path(__file__).resolve().parents[2] / "images"
+IMAGE_DIR = Path(__file__).resolve().parents[1] / "images"
 OUTPUT_DIR = Path(__file__).resolve().parent
 
 
@@ -66,7 +66,7 @@ def main():
         cv2.LINE_AA,
     )
 
-    output_path = OUTPUT_DIR / "task7_object_localization.jpg"
+    output_path = OUTPUT_DIR / "task10_object_localization.jpg"
     if not cv2.imwrite(str(output_path), result):
         raise OSError(f"Could not write visualization: {output_path}")
     print(f"Ratio-test matches: {len(good_matches)}")

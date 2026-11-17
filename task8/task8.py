@@ -6,7 +6,7 @@ import matplotlib
 matplotlib.use("Agg")
 
 
-IMAGE_DIR = Path(__file__).resolve().parents[2] / "images"
+IMAGE_DIR = Path(__file__).resolve().parents[1] / "images"
 OUTPUT_DIR = Path(__file__).resolve().parent
 
 
@@ -41,7 +41,7 @@ def main():
         None,
         flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS,
     )
-    output_path = OUTPUT_DIR / "task7_feature_matches.jpg"
+    output_path = OUTPUT_DIR / "task8_feature_matches.jpg"
     if not cv2.imwrite(str(output_path), visualization):
         raise OSError(f"Could not write visualization: {output_path}")
 

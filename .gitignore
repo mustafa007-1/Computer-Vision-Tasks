@@ -10,6 +10,21 @@ task4/task4_*.jpg
 task5/task5_*.jpg
 task6/task6_*.jpg
 task7/task7_*.jpg
-lab 7/task */task7_*.jpg
-lab 7/lab manual/task */task7_*.jpg
-lab 7/lab manual/task */task7_*.npy
+task8/task8_*.jpg
+task9/task9_*.jpg
+task10/task10_*.jpg
+task11/task11_*.jpg
+task12/task12_*.jpg
+task13/task13_*.jpg
+task14/task14_*.jpg
+task15/task15_*.npy
+task16/task16_*.jpg
+task17/task17_*.jpg
+task18/task18_*.png
+task19/task19_*.png
+task19/task19_*.npz
+task20/task20_*.png
+task20/task20_*.mp4
+
+# downloaded datasets (Imagenette, sample video)
+data/

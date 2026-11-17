@@ -1,14 +1,10 @@
 from pathlib import Path
 
 import cv2
-import matplotlib
 import numpy as np
 
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 
-
-IMAGE_DIR = Path(__file__).resolve().parents[3] / "images"
+IMAGE_DIR = Path(__file__).resolve().parents[1] / "images"
 OUTPUT_DIR = Path(__file__).resolve().parent
 
 
@@ -40,7 +36,7 @@ def main():
     ]
     if len(good_matches) < 4:
         raise RuntimeError(
-            f"At least four matches are required to identify outliers; found {len(good_matches)}."
+            f"At least four matches are required to estimate a homography; found {len(good_matches)}."
         )
 
     source_points = np.float32(
@@ -53,40 +49,18 @@ def main():
         source_points, target_points, cv2.RANSAC, 5.0
     )
     if homography is None or mask is None:
-        raise RuntimeError("RANSAC could not classify the descriptor matches.")
+        raise RuntimeError("RANSAC could not estimate a homography.")
 
-    inlier_matches = [
-        match for match, is_inlier in zip(good_matches, mask.ravel()) if is_inlier
-    ]
-    outlier_matches = [
-        match for match, is_inlier in zip(good_matches, mask.ravel()) if not is_inlier
-    ]
-    panels = (
-        cv2.drawMatches(
-            source, source_keypoints, target, target_keypoints, inlier_matches, None,
-            flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS,
-        ),
-        cv2.drawMatches(
-            source, source_keypoints, target, target_keypoints, outlier_matches, None,
-            flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS,
-        ),
-    )
-    figure, axes = plt.subplots(2, 1, figsize=(16, 12))
-    for axis, panel, title in zip(
-        axes,
-        panels,
-        (f"RANSAC inliers ({len(inlier_matches)})", f"RANSAC outliers ({len(outlier_matches)})"),
-    ):
-        axis.imshow(cv2.cvtColor(panel, cv2.COLOR_BGR2RGB))
-        axis.set_title(title)
-        axis.axis("off")
-    figure.tight_layout()
-    output_path = OUTPUT_DIR / "task7_manual_ransac_inliers_outliers.jpg"
-    figure.savefig(output_path, dpi=120, bbox_inches="tight")
-    plt.close(figure)
-    print(f"RANSAC inliers: {len(inlier_matches)}")
-    print(f"RANSAC outliers: {len(outlier_matches)}")
-    print(f"Saved visualization to {output_path}")
+    print("Homography matrix:")
+    print(homography)
+    print(f"RANSAC inliers: {int(mask.sum())}")
+    print(f"RANSAC outliers: {len(good_matches) - int(mask.sum())}")
+
+    output_path = OUTPUT_DIR / "task15_homography.npy"
+    np.save(output_path, homography)
+    if not output_path.is_file():
+        raise OSError(f"Could not save homography matrix: {output_path}")
+    print(f"Saved homography matrix to {output_path}")
 
 
 if __name__ == "__main__":
